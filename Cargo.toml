@@ -1,0 +1,19 @@
+[package]
+name = "syscall"
+version = "0.1.0"
+authors = ["Dominus Carnufex"]
+publish = false
+
+[profile.test]
+opt-level = 3
+debug = true
+rpath = false
+lto = false
+debug-assertions = true
+codegen-units = 1
+panic = 'unwind'
+
+[lib]
+name = "syscall"
+crate-type = ["rlib"]
+doctest = false
