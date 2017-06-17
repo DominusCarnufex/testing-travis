@@ -12,3 +12,9 @@ matrix:
       install:
         - rustup target add $TARGET
       script: cargo test --verbose
+     - os: osx
+       env: TARGET=x86_64-apple-darwin
+       script: cargo test --verbose
+     - os: linux
+       env: TARGET=x86_64-unknown-linux-gnu
+       script: cargo test --verbose
