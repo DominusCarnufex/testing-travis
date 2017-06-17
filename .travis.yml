@@ -13,8 +13,11 @@ matrix:
       script: cargo test --verbose
     - os: linux
       env: TARGET=i686-unknown-linux-gnu
-      install:
-        - rustup target add $TARGET
+      before_install:
+        - sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu trusty main universe"
+        - sudo apt-get update -qq
         - sudo apt-get install -y --no-install-recommends \
             gcc-multilib libc6-dev
+      install:
+        - rustup target add $TARGET
       script: cargo test --verbose
