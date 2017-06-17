@@ -8,12 +8,7 @@ matrix:
     - os: linux
       env: TARGET=i686-unknown-linux-gnu
       before_install:
-        - sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu trusty main restricted universe multiverse"
-        - sudo apt-get update -qq
-        - apt-cache showpkg gcc-multilib
-        - apt-cache showpkg gcc-4.8-multilib
-        - sudo apt-get install -y --no-install-recommends \
-            gcc-multilib libc6-dev
+        - sudo apt-get install -y --no-install-recommends gcc-multilib libc6-dev
       install:
         - rustup target add $TARGET
       script: cargo test --verbose
