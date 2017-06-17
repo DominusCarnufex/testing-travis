@@ -12,6 +12,13 @@ matrix:
       install:
         - rustup target add $TARGET
       script: cargo test --verbose
+    - os: linux
+      env: TARGET=i586-unknown-linux-gnu
+      before_install:
+        - sudo apt-get install -y --no-install-recommends gcc-multilib libc6-dev
+      install:
+        - rustup target add $TARGET
+      script: cargo test --verbose
     - os: osx
       env: TARGET=x86_64-apple-darwin
       script: cargo test --verbose
