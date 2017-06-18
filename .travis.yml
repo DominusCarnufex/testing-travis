@@ -6,18 +6,28 @@ rust: nightly
 matrix:
   include:
     - os: linux
-      env: TARGETS=x86-linux
+      env: TARGETS=x86_64-unknown-linux-musl
       before_install:
-        - sudo apt-get install -y --no-install-recommends gcc-multilib libc6-dev
+        - sudo apt-get install -y --no-install-recommends make libc6-dev curl
+        - curl https://www.musl-libc.org/releases/musl-1.1.16.tar.gz | tar xzf -
+        - cd musl-1.1.16 && ./configure --prefix=/musl-x86_64 && make install -j4 && cd ..
+        - rm -rf musl-1.1.16
+        - export PATH=$PATH:/musl-x86_64/bin
       install:
-        - rustup target add i586-unknown-linux-gnu
-        - rustup target add i686-unknown-linux-gnu
+        - rustup target add x86_64-unknown-linux-musl
       script:
-        - TARGET=i586-unknown-linux-gnu cargo test --verbose
-        - TARGET=i686-unknown-linux-gnu cargo test --verbose
-    - os: osx
-      env: TARGET=x86_64-apple-darwin
-      script: cargo test --verbose
+        - cargo test --verbose
     - os: linux
-      env: TARGET=x86_64-unknown-linux-gnu
-      script: cargo test --verbose
+      env: TARGETS=i686-unknown-linux-musl
+      before_install:
+        - sudo apt-get install -y --no-install-recommends gcc-multilib make libc6-dev curl libc6:i386
+        - curl https://www.musl-libc.org/releases/musl-1.1.16.tar.gz | tar xzf -
+        - cd musl-1.1.16 && \
+          CC=gcc CFLAGS=-m32 ./configure --prefix=/musl-i686 --disable-shared --target=i686 && \
+          make CROSS_COMPILE= install -j4 && cd ..
+        - rm -rf musl-1.1.16
+        - export PATH=$PATH:/musl-i686/bin
+      install:
+        - rustup target add i686-unknown-linux-musl
+      script:
+        - cargo test --verbose
