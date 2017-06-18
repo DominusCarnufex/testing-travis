@@ -6,7 +6,7 @@ rust: nightly
 matrix:
   include:
     - os: linux
-      env: TARGETS=x86_64-unknown-linux-musl
+      env: TARGET=x86_64-unknown-linux-musl
       before_install:
         - sudo apt-get install -y --no-install-recommends make libc6-dev curl
         - curl https://www.musl-libc.org/releases/musl-1.1.16.tar.gz | tar xzf -
@@ -20,7 +20,7 @@ matrix:
       script:
         - cargo test --verbose
     - os: linux
-      env: TARGETS=i686-unknown-linux-musl
+      env: TARGET=i686-unknown-linux-musl
       before_install:
         - sudo apt-get install -y --no-install-recommends gcc-multilib make libc6-dev curl
         - curl https://www.musl-libc.org/releases/musl-1.1.16.tar.gz | tar xzf -
