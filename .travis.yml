@@ -22,8 +22,7 @@ matrix:
     - os: linux
       env: TARGETS=i686-unknown-linux-musl
       before_install:
-        - sudo apt-get install -y --no-install-recommends gcc-multilib \
-          make libc6-dev curl libc6:i386
+        - sudo apt-get install -y --no-install-recommends gcc-multilib make libc6-dev curl
         - curl https://www.musl-libc.org/releases/musl-1.1.16.tar.gz | tar xzf -
         - sudo mkdir /musl-i686 && sudo chown $USER:$USER /musl-i686
         - cd musl-1.1.16 && \
