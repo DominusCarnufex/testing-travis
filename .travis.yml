@@ -6,7 +6,30 @@ rust: nightly
 matrix:
   include:
     - os: linux
-      env: TARGET=x86_64-unknown-linux-musl
+      env: TARGETS=x86-linux
+      before_install:
+        - sudo apt-get install -y --no-install-recommends
+          gcc-multilib libc6-dev make curl
+        - curl https://www.musl-libc.org/releases/musl-1.1.16.tar.gz | tar xzf -
+        - sudo mkdir /musl-i686 && sudo chown $USER:$USER /musl-i686
+        - cd musl-1.1.16
+          && CC=gcc CFLAGS=-m32 ./configure --prefix=/musl-i686 --disable-shared --target=i686
+          && make CROSS_COMPILE= install -j4 && cd ..
+        - rm -rf musl-1.1.16
+        - export PATH=$PATH:/musl-i686/bin
+      install:
+        - rustup target add i586-unknown-linux-gnu
+        - rustup target add i686-unknown-linux-gnu
+        - rustup target add i686-unknown-linux-musl
+      script:
+        - TARGET=i586-unknown-linux-gnu cargo test --verbose
+        - TARGET=i686-unknown-linux-gnu cargo test --verbose
+        - TARGET=i686-unknown-linux-musl cargo test --verbose
+    - os: osx
+      env: TARGET=x86_64-apple-darwin
+      script: cargo test --verbose
+    - os: linux
+      env: TARGETS=x86_64-linux
       before_install:
         - sudo apt-get install -y --no-install-recommends make libc6-dev curl
         - curl https://www.musl-libc.org/releases/musl-1.1.16.tar.gz | tar xzf -
@@ -18,19 +41,5 @@ matrix:
       install:
         - rustup target add x86_64-unknown-linux-musl
       script:
-        - cargo test --verbose
-    - os: linux
-      env: TARGET=i686-unknown-linux-musl
-      before_install:
-        - sudo apt-get install -y --no-install-recommends gcc-multilib make libc6-dev curl
-        - curl https://www.musl-libc.org/releases/musl-1.1.16.tar.gz | tar xzf -
-        - sudo mkdir /musl-i686 && sudo chown $USER:$USER /musl-i686
-        - cd musl-1.1.16
-          && CC=gcc CFLAGS=-m32 ./configure --prefix=/musl-i686 --disable-shared --target=i686
-          && make CROSS_COMPILE= install -j4 && cd ..
-        - rm -rf musl-1.1.16
-        - export PATH=$PATH:/musl-i686/bin
-      install:
-        - rustup target add i686-unknown-linux-musl
-      script:
-        - cargo test --verbose
+        - TARGET=x86_64-unknown-linux-gnu rustup target add x86_64-unknown-linux-musl
+        - TARGET=x86_64-unknown-linux-musl rustup target add x86_64-unknown-linux-musl
