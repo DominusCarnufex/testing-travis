@@ -8,3 +8,4 @@ cd qemu-2.9.0
 ./configure --target-list=$1-softmmu --disable-docs
 time make -j4
 sudo make install
+cd ..
