@@ -8,15 +8,16 @@ group: edge
 matrix:
   include:
     - os: linux
-      env: TESTING_QEMU=arm
+      env: TARGET=armv5te-unknown-linux-gnueabi
       before_install:
-        - sudo apt-get install -y --no-install-recommends curl xz-utils
-        - curl http://download.qemu.org/qemu-2.9.0.tar.xz | tar xJf -
-        - cd qemu-2.9.0
-        - ./configure --target-list=arm-softmmu
-        - time make -j4
-        - sudo make install
+        - sh ci/common_qemu.sh arm
+#      install:
+#        - rustup target add armv5te-unknown-linux-gnueabi
       script:
-        - qemu-system-arm --version
-        - qemu-system-arm -M ?
-        - qemu-system-arm -M none -cpu ?
+        - qemu-img create -f qcow2 mainstone1.img 64M
+        - qemu-img create -f qcow2 mainstone2.img 64M
+        - unxz ci/arm/initrd.xz
+        - qemu-system-arm -kernel ci/arm/$TARGET/zImage -append 'console=ttyS0'
+          -machine mainstone -pflash mainstone1.img -pflash mainstone2.img
+          -initrd initrd -nographic 2>&1 | tee out.log
+        - grep "Boot took" out.log
