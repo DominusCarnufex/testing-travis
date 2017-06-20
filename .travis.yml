@@ -11,10 +11,9 @@ matrix:
       env: TESTING_QEMU=arm
       before_install:
         - sudo apt-get install -y --no-install-recommends curl xz-utils
-        - curl http://download.qemu-project.org/qemu-2.9.0.tar.xz | tar xJf -
+        - curl http://download.qemu-project.org/qemu-2.9.0.tar.xz | unxz - | tar xf -
         - cd qemu-2.9.0
-        - ./configure --help
-        - ./configure --target-list=arm
+        - ./configure --target-list=arm-softmmu
         - time make -j4
         - sudo make install
       script:
