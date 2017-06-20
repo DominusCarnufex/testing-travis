@@ -10,7 +10,7 @@ matrix:
     - os: linux
       env: TESTING_QEMU=arm
       before_install:
-        - sudo apt-get install -y --no-install-recommends curl xz
+        - sudo apt-get install -y --no-install-recommends curl xz-utils
         - curl http://download.qemu-project.org/qemu-2.9.0.tar.xz | tar xJf -
         - cd qemu-2.9.0
         - ./configure --help
