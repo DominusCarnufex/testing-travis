@@ -16,7 +16,7 @@ matrix:
       script:
         - qemu-img create -f qcow2 mainstone1.img 64M
         - qemu-img create -f qcow2 mainstone2.img 64M
-        - unxz ci/arm/initrd.xz
+        - unxz -c ci/arm/initrd.xz > initrd
         - qemu-system-arm -kernel ci/arm/$TARGET/zImage -append 'console=ttyS0'
           -machine mainstone -pflash mainstone1.img -pflash mainstone2.img
           -initrd initrd -nographic #2>&1 | tee out.log
