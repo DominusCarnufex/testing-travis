@@ -25,4 +25,5 @@ matrix:
         - sh -v ci/test_in_qemu.sh
         - qemu-system-arm -kernel ci/$ARCH/$TARGET/zImage -initrd initrd
           -nographic -no-reboot $QEMU_ARGS | tee out.log
+        - cat out.log
         - grep "0 failed;" out.log
