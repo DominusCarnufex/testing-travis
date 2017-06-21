@@ -11,9 +11,13 @@ matrix:
       env: TARGET=armv5te-unknown-linux-gnueabi
       before_install:
         - sh ci/common_qemu.sh arm
-#      install:
+        - sudo apt-get install -y --no-install-recommends gcc-arm-linux-gnueabi
+          libc6-dev-armel-cross
+      install:
+        - rustup target add arm-unknown-linux-gnueabi
 #        - rustup target add armv5te-unknown-linux-gnueabi
       script:
+        - rustc -O -o test.elf --test src/lib.rs
         - qemu-img create -f qcow2 mainstone1.img 64M
         - qemu-img create -f qcow2 mainstone2.img 64M
         - unxz -c ci/arm/initrd.xz > initrd
