@@ -12,7 +12,7 @@ matrix:
         - TARGET=armv5te-unknown-linux-gnueabi
         - ARCH=arm
         - GCC_VARIANT=arm-linux-gnueabi
-      before_install: LIBC_VARIANT=armel sh -v ci/install_qemu_and_gcc.sh
+      before_install: LIBC_VARIANT=armel sh -v install_qemu_and_gcc.sh
       install:
         - rustup target add arm-unknown-linux-gnueabi
 #        - rustup target add armv5te-unknown-linux-gnueabi
@@ -22,5 +22,7 @@ matrix:
         - export QEMU_ARGS="-append 'console=ttyS0' -machine mainstone
           -pflash mainstone1.img -pflash mainstone2.img"
         - export RUSTC_TARGET=arm-unknown-linux-gnueabi
-        - sh -v ci/test_in_qemu.sh 2>&1 > debug.log
-        - cat debug.log
+        - sh -v test_in_qemu.sh
+        - qemu-system-arm -kernel ci/$ARCH/$TARGET/zImage -initrd initrd
+          -nographic -no-reboot $QEMU_ARGS | tee out.log
+        - grep "0 failed;" out.log
