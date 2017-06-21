@@ -21,10 +21,12 @@ matrix:
         - rustc -O -o tests.elf --test src/lib.rs
           --target arm-unknown-linux-gnueabi -C linker="arm-linux-gnueabi-gcc"
         - readelf -e tests.elf
+        - readelf -p 1 tests.elf
       # Update initrd
         - unxz -c ci/arm/initrd.xz > initrd
         - mkdir initramfs && cd initramfs
         - cpio -i < ../initrd
+        - mkdir lib && cp /usr/arm-linux-gnueabi/lib/* lib
         - mv ../tests.elf .
         - find . | cpio -o -H newc > ../initrd && cd ..
       # Launch QEMU
