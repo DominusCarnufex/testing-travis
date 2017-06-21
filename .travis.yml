@@ -20,6 +20,7 @@ matrix:
       # Compile test harness
         - rustc -O -o tests.elf --test src/lib.rs
           --target arm-unknown-linux-gnueabi -C linker="arm-linux-gnueabi-gcc"
+        - readelf -e tests.elf
       # Update initrd
         - unxz -c ci/arm/initrd.xz > initrd
         - mkdir initramfs && cd initramfs
