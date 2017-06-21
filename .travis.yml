@@ -8,31 +8,18 @@ group: edge
 matrix:
   include:
     - os: linux
-      env: TARGET=armv5te-unknown-linux-gnueabi
-      before_install:
-        - sh ci/install_qemu.sh arm
-        - sudo apt-get install -y --no-install-recommends gcc-arm-linux-gnueabi
-          libc6-dev-armel-cross
+      env:
+        - TARGET=armv5te-unknown-linux-gnueabi
+        - ARCH=arm
+        - GCC_VARIANT=arm-linux-gnueabi
+      before_install: LIBC_VARIANT=armel sh ci/install_qemu_and_gcc.sh
       install:
         - rustup target add arm-unknown-linux-gnueabi
 #        - rustup target add armv5te-unknown-linux-gnueabi
       script:
-      # Compile test harness
-        - rustc -O -o tests.elf --test src/lib.rs
-          --target arm-unknown-linux-gnueabi -C linker="arm-linux-gnueabi-gcc"
-        - readelf -e tests.elf
-        - readelf -p 1 tests.elf
-      # Update initrd
-        - unxz -c ci/arm/initrd.xz > initrd
-        - mkdir initramfs && cd initramfs
-        - cpio -i < ../initrd
-        - mkdir lib && cp /usr/arm-linux-gnueabi/lib/* lib
-        - mv ../tests.elf .
-        - find . | cpio -o -H newc > ../initrd && cd ..
-      # Launch QEMU
         - qemu-img create -f qcow2 mainstone1.img 64M
         - qemu-img create -f qcow2 mainstone2.img 64M
-        - qemu-system-arm -kernel ci/arm/$TARGET/zImage -append 'console=ttyS0'
-          -machine mainstone -pflash mainstone1.img -pflash mainstone2.img
-          -initrd initrd -nographic -no-reboot | tee out.log
-        - grep "0 failed;" out.log
+        - export QEMU_ARGS="-append 'console=ttyS0' -machine mainstone
+          -pflash mainstone1.img -pflash mainstone2.img"
+        - export RUSTC_TARGET=arm-unknown-linux-gnueabi
+        - sh ci/test_in_qemu.sh
