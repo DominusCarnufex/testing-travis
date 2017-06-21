@@ -18,7 +18,7 @@ matrix:
 #        - rustup target add armv5te-unknown-linux-gnueabi
       script:
       # Compile test harness
-        - rustc -O -o tests.elf --test src/lib.rs
+        - rustc -O -o tests.elf --test --target arm-unknown-linux-gnueabi src/lib.rs
         - file tests.elf
         - ldd tests.elf
       # Update initrd
