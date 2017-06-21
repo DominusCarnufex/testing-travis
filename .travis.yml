@@ -24,7 +24,7 @@ matrix:
         - unxz -c ci/arm/initrd.xz > initrd
         - mkdir initramfs && cd initramfs
         - cpio -i < ../initrd
-        - mv ../tests.elf usr/bin
+        - mv ../tests.elf .
         - find . | cpio -o -H newc > ../initrd && cd ..
       # Launch QEMU
         - qemu-img create -f qcow2 mainstone1.img 64M
