@@ -19,11 +19,11 @@ matrix:
       script:
         - qemu-img create -f qcow2 mainstone1.img 64M
         - qemu-img create -f qcow2 mainstone2.img 64M
-        - export QEMU_ARGS="-append 'console=ttyS0' -machine mainstone
-          -pflash mainstone1.img -pflash mainstone2.img"
+        - export QEMU_ARGS="-machine mainstone -pflash mainstone1.img
+          -pflash mainstone2.img"
         - export RUSTC_TARGET=arm-unknown-linux-gnueabi
         - sh -v ci/test_in_qemu.sh
         - qemu-system-arm -kernel ci/$ARCH/$TARGET/zImage -initrd initrd
-          -nographic -no-reboot #$QEMU_ARGS #| tee out.log
+          -nographic -no-reboot -append 'console=ttyS0' $QEMU_ARGS #| tee out.log
         - cat out.log
         - grep "0 failed;" out.log
