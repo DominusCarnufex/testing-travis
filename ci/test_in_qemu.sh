@@ -2,9 +2,11 @@
 
 # Compiles a test harness and then runs it in QEMU.
 
+if [ -z $RUSTC_TARGET ]; then RUSTC_TARGET=$TARGET; fi
+
 # Compile test harness
 rustc -O -o tests.elf --test src/lib.rs \
-    --target $TARGET -C linker="$GCC_VARIANT-gcc"
+    --target $RUSTC_TARGET -C linker="$GCC_VARIANT-gcc"
 
 # Update initrd
 unxz -c ci/$ARCH/initrd.xz > initrd
