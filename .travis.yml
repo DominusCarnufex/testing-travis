@@ -22,4 +22,5 @@ matrix:
         - export QEMU_ARGS="-append 'console=ttyS0' -machine mainstone
           -pflash mainstone1.img -pflash mainstone2.img"
         - export RUSTC_TARGET=arm-unknown-linux-gnueabi
-        - sh -v ci/test_in_qemu.sh
+        - sh -v ci/test_in_qemu.sh 2>&1 > debug.log
+        - cat debug.log
