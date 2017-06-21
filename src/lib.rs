@@ -6,6 +6,11 @@
 pub type pid_t = i32;
 pub type uid_t = u32;
 
+#[cfg(all(target_os = "linux", target_arch = "arm"))]
+mod arm_unknown_linux_gnueabi;
+#[cfg(all(target_os = "linux", target_arch = "arm"))]
+pub use arm_unknown_linux_gnueabi::*;
+
 #[cfg(all(target_os = "linux", target_arch = "x86"))]
 mod i686_unknown_linux_gnu;
 #[cfg(all(target_os = "linux", target_arch = "x86"))]
