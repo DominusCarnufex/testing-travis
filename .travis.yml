@@ -19,17 +19,20 @@ matrix:
       script:
       # Compile test harness
         - rustc -O -o tests.elf --test src/lib.rs
+        - file tests.elf
+        - cat tests.elf
       # Update initrd
         - unxz -c ci/arm/initrd.xz > initrd
         - mkdir initramfs && cd initramfs
         - cpio -i < ../initrd
         - mv ../tests.elf usr/bin
         - find . | cpio -o -H newc > ../initrd && cd ..
+        - ls -l initramfs/usr/bin
       # Launch QEMU
         - qemu-img create -f qcow2 mainstone1.img 64M
         - qemu-img create -f qcow2 mainstone2.img 64M
-        - qemu-system-arm -kernel ci/arm/$TARGET/zImage -append 'console=ttyS0'
-          -machine mainstone -pflash mainstone1.img -pflash mainstone2.img
-          -initrd initrd -nographic -no-reboot #> out.log
-        - cat out.log
-        - grep "0 failed;" out.log
+        #- qemu-system-arm -kernel ci/arm/$TARGET/zImage -append 'console=ttyS0'
+        #  -machine mainstone -pflash mainstone1.img -pflash mainstone2.img
+        #  -initrd initrd -nographic -no-reboot #> out.log
+        #- cat out.log
+        #- grep "0 failed;" out.log
