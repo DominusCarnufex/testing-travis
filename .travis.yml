@@ -10,18 +10,25 @@ matrix:
     - os: linux
       env: TARGET=armv5te-unknown-linux-gnueabi
       before_install:
-        - sh ci/common_qemu.sh arm
+        - sh ci/install_qemu.sh arm
         - sudo apt-get install -y --no-install-recommends gcc-arm-linux-gnueabi
           libc6-dev-armel-cross
       install:
         - rustup target add arm-unknown-linux-gnueabi
 #        - rustup target add armv5te-unknown-linux-gnueabi
       script:
-        - rustc -O -o test.elf --test src/lib.rs
+      # Compile test harness
+        - rustc -O -o tests.elf --test src/lib.rs
+      # Update initrd
+        - unxz -c ci/arm/initrd.xz > initrd
+        - mkdir initramfs && cd initramfs
+        - cpio -i < ../initrd
+        - mv ../tests.elf usr/bin
+        - find . | cpio -o -H newc > ../initrd && cd ..
+      # Launch QEMU
         - qemu-img create -f qcow2 mainstone1.img 64M
         - qemu-img create -f qcow2 mainstone2.img 64M
-        - unxz -c ci/arm/initrd.xz > initrd
         - qemu-system-arm -kernel ci/arm/$TARGET/zImage -append 'console=ttyS0'
           -machine mainstone -pflash mainstone1.img -pflash mainstone2.img
           -initrd initrd -nographic -no-reboot > out.log
-        - grep "Boot took" out.log
+        - grep "0 failed;" out.log
