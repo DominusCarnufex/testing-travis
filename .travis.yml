@@ -23,7 +23,3 @@ matrix:
           -pflash mainstone2.img"
         - export RUSTC_TARGET=arm-unknown-linux-gnueabi
         - sh -v ci/test_in_qemu.sh
-        - qemu-system-arm -kernel ci/$ARCH/$TARGET/zImage -initrd initrd
-          -nographic -no-reboot -append 'console=ttyS0' $QEMU_ARGS #| tee out.log
-        - cat out.log
-        - grep "0 failed;" out.log
