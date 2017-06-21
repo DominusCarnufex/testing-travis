@@ -18,3 +18,10 @@ cp /usr/$GCC_VARIANT/lib/* lib
 mv ../tests.elf .
 find . | cpio -o -H newc > ../initrd
 cd ..
+
+# Run test in QEMU
+qemu-system-arm -kernel ci/$ARCH/$TARGET/zImage -initrd initrd \
+    -nographic -no-reboot -append 'console=ttyS0' $QEMU_ARGS | tee out.log
+
+# Check if it worked
+grep "0 failed;" out.log
