@@ -1,0 +1,10 @@
+--- hw/core/loader.c	2017-04-20 16:57:00.000000000 +0200
++++ hw/core/loader.c	2017-07-06 20:51:39.661978795 +0200
+@@ -1106,7 +1106,6 @@
+                     "(rom %s. free=0x" TARGET_FMT_plx
+                     ", addr=0x" TARGET_FMT_plx ")\n",
+                     rom->name, addr, rom->addr);
+-            return -1;
+         }
+         addr  = rom->addr;
+         addr += rom->romsize;
