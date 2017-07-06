@@ -20,7 +20,7 @@ find . | cpio -o -H newc > ../initrd
 cd ..
 
 # Run test in QEMU
-qemu-system-arm -kernel ci/$ARCH/$TARGET/zImage -initrd initrd \
+qemu-system-$ARCH -kernel ci/$ARCH/$TARGET/zImage -initrd initrd \
     -nographic -no-reboot -append 'console=ttyS0' $QEMU_ARGS | tee out.log
 
 # Check if it worked
