@@ -9,17 +9,9 @@ matrix:
   include:
     - os: linux
       env:
-        - TARGET=armv5te-unknown-linux-gnueabi
-        - ARCH=arm
-        - GCC_VARIANT=arm-linux-gnueabi
-      before_install: LIBC_VARIANT=armel sh -v ci/install_qemu_and_gcc.sh
-      install:
-        - rustup target add arm-unknown-linux-gnueabi
-#        - rustup target add armv5te-unknown-linux-gnueabi
-      script:
-        - qemu-img create -f qcow2 mainstone1.img 64M
-        - qemu-img create -f qcow2 mainstone2.img 64M
-        - export QEMU_ARGS="-machine mainstone -pflash mainstone1.img
-          -pflash mainstone2.img"
-        - export RUSTC_TARGET=arm-unknown-linux-gnueabi
-        - sh -v ci/test_in_qemu.sh
+        - TARGET=powerpc-unknown-linux-gnu
+        - ARCH=ppc
+        - GCC_VARIANT=powerpc-linux-gnu
+      before_install: LIBC_VARIANT=powerpc sh -v ci/install_qemu_and_gcc.sh
+      install: rustup target add $TARGET
+      script: sh -v ci/test_in_qemu.sh
